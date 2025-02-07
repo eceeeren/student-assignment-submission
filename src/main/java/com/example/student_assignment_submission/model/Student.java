@@ -2,9 +2,6 @@ package com.example.student_assignment_submission.model;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Table(name = "students")
 public class Student {
@@ -18,9 +15,6 @@ public class Student {
 
     @Column(name = "email", length = 150, nullable = false, unique = true)
     private String email;
-
-    @OneToMany(mappedBy = "submittedBy", cascade = CascadeType.ALL)
-    private List<Assignment> assignments = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -46,11 +40,4 @@ public class Student {
         this.email = email;
     }
 
-    public List<Assignment> getAssignments() {
-        return assignments;
-    }
-
-    public void setAssignments(List<Assignment> assignments) {
-        this.assignments = assignments;
-    }
 }
