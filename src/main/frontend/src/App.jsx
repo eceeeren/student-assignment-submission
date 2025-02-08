@@ -19,7 +19,7 @@ import {
     Stack,
     Box
 } from '@mui/material';
-import { layoutStyles, listStyles, formStyles, cardStyles } from './styles';
+import { layoutStyles, listStyles, formStyles, cardStyles } from './styles.js';
 
 const API_URL = 'http://localhost:8080';
 
