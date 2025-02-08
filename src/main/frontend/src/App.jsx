@@ -17,7 +17,9 @@ import {
     Card,
     CardContent,
     Stack,
-    Box
+    Box,
+    Snackbar,
+    Alert
 } from '@mui/material';
 import { layoutStyles, listStyles, formStyles, cardStyles } from './styles.js';
 
@@ -38,6 +40,11 @@ const App = () => {
     const [tabValue, setTabValue] = useState(0);
     const [students, setStudents] = useState([]);
     const [assignments, setAssignments] = useState([]);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'success'
+    });
     const [newStudent, setNewStudent] = useState({
         name: '',
         email: ''
@@ -47,6 +54,21 @@ const App = () => {
         description: '',
         studentId: ''
     });
+
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbar({ ...snackbar, open: false });
+    };
+
+    const showNotification = (message, severity = 'success') => {
+        setSnackbar({
+            open: true,
+            message,
+            severity
+        });
+    };
 
     useEffect(() => {
         fetchStudents();
@@ -60,6 +82,7 @@ const App = () => {
             setStudents(data);
         } catch (error) {
             console.error('Error fetching students:', error);
+            showNotification('Failed to fetch students. Please try again later.', 'error');
         }
     };
 
@@ -70,6 +93,7 @@ const App = () => {
             setAssignments(data);
         } catch (error) {
             console.error('Error fetching assignments:', error);
+            showNotification('Failed to fetch assignments. Please try again later.', 'error');
         }
     };
 
@@ -77,6 +101,7 @@ const App = () => {
         e.preventDefault();
 
         if (!newStudent.name.trim() || !newStudent.email.trim()) {
+            showNotification('Please fill in all required fields.', 'error');
             return;
         }
 
@@ -89,9 +114,13 @@ const App = () => {
             if (response.ok) {
                 setNewStudent({ name: '', email: '' });
                 fetchStudents();
+                showNotification('Student registered successfully!');
+            } else {
+                throw new Error('Failed to register student');
             }
         } catch (error) {
             console.error('Error registering student:', error);
+            showNotification('Failed to register student. Please try again.', 'error');
         }
     };
 
@@ -99,6 +128,7 @@ const App = () => {
         e.preventDefault();
 
         if (!newAssignment.title.trim() || !newAssignment.studentId) {
+            showNotification('Please fill in all required fields.', 'error');
             return;
         }
 
@@ -111,9 +141,13 @@ const App = () => {
             if (response.ok) {
                 setNewAssignment({ title: '', description: '', studentId: '' });
                 fetchAssignments();
+                showNotification('Assignment submitted successfully!');
+            } else {
+                throw new Error('Failed to submit assignment');
             }
         } catch (error) {
             console.error('Error submitting assignment:', error);
+            showNotification('Failed to submit assignment. Please try again.', 'error');
         }
     };
 
@@ -179,8 +213,6 @@ const App = () => {
                                     </CardContent>
                                 </Card>
                             </Box>
-
-                            {/* Assignment List */}
 
                             {/* Student List */}
                             <Box flex={1}>
@@ -252,7 +284,6 @@ const App = () => {
                                                 <FormControl fullWidth margin="normal" required error={!newAssignment.studentId}>
                                                     <InputLabel>Select Student</InputLabel>
                                                     <Select
-                                                        variant="outlined"
                                                         value={newAssignment.studentId}
                                                         label="Select Student"
                                                         onChange={(e) => setNewAssignment({ ...newAssignment, studentId: e.target.value })}
@@ -273,47 +304,66 @@ const App = () => {
                                                 >
                                                     Submit Assignment
                                                 </Button>
-                                            </form>)}
-                                            </CardContent>
-                                            </Card>
-                                            </Box>
+                                            </form>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </Box>
 
-                                        {/* Assignment List */}
-                                        <Box flex={1}>
-                                            <Card sx={cardStyles.card}>
-                                                <CardContent>
-                                                    <Typography variant="h6" gutterBottom>
-                                                        Assignment List
-                                                    </Typography>
-                                                    <List>
-                                                        {assignments.map((assignment, index) => (
-                                                            <ListItem key={assignment.id} divider>
-                                                                <Box sx={listStyles.listContent}>
-                                                                    <Box sx={listStyles.numberBadge}>
-                                                                        {index + 1}
-                                                                    </Box>
-                                                                    <Box sx={listStyles.listText}>
-                                                                        <Typography variant="body1" sx={listStyles.listItemTitle}>
-                                                                            <strong>Title:</strong> {assignment.title}
-                                                                        </Typography>
-                                                                        <Typography variant="body2" sx={listStyles.listItemSecondary}>
-                                                                            <strong>Description:</strong> {assignment.description}
-                                                                        </Typography>
-                                                                        <Typography variant="body2" sx={listStyles.listItemSecondary}>
-                                                                            <strong>Submitted By:</strong> {assignment.submittedBy?.name || 'Unknown'}
-                                                                        </Typography>
-                                                                    </Box>
-                                                                </Box>
-                                                            </ListItem>
-                                                        ))}
-                                                    </List>
-                                                </CardContent>
-                                            </Card>
-                                        </Box>
+                            {/* Assignment List */}
+                            <Box flex={1}>
+                                <Card sx={cardStyles.card}>
+                                    <CardContent>
+                                        <Typography variant="h6" gutterBottom>
+                                            Assignment List
+                                        </Typography>
+                                        <List>
+                                            {assignments.map((assignment, index) => (
+                                                <ListItem key={assignment.id} divider>
+                                                    <Box sx={listStyles.listContent}>
+                                                        <Box sx={listStyles.numberBadge}>
+                                                            {index + 1}
+                                                        </Box>
+                                                        <Box sx={listStyles.listText}>
+                                                            <Typography variant="body1" sx={listStyles.listItemTitle}>
+                                                                <strong>Title:</strong> {assignment.title}
+                                                            </Typography>
+                                                            {assignment.description && (
+                                                                <Typography variant="body2" sx={listStyles.listItemSecondary}>
+                                                                    <strong>Description:</strong> {assignment.description}
+                                                                </Typography>
+                                                            )}
+                                                            <Typography variant="body2" sx={listStyles.listItemSecondary}>
+                                                                <strong>Submitted By:</strong> {assignment.submittedBy?.name || 'Unknown'}
+                                                            </Typography>
+                                                        </Box>
+                                                    </Box>
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    </CardContent>
+                                </Card>
+                            </Box>
                         </Stack>
                     </Box>
                 </Paper>
             </Container>
+
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbar.severity}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };
