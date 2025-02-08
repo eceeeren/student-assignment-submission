@@ -29,7 +29,7 @@ import { layoutStyles, listStyles, formStyles, cardStyles } from './styles.js';
  * - Implements REST API calls to backend endpoints
  * - Material-UI components for consistent UI/UX
  *
- * - Comment created by Claude (Anthropic), edited by the author
+ * - Comment and component styles are created by Claude (Anthropic), edited by the author
  */
 
 const API_URL = 'http://localhost:8080';
