@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Server" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="student-assignment-submission" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.student_assignment_submission.StudentAssignmentSubmissionApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
