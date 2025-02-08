@@ -21,6 +21,17 @@ import {
 } from '@mui/material';
 import { layoutStyles, listStyles, formStyles, cardStyles } from './styles.js';
 
+/**
+ * Main Web Application Component for Student Assignment System
+ *
+ * Technical Implementation:
+ * - Uses React hooks (useState, useEffect) for state management
+ * - Implements REST API calls to backend endpoints
+ * - Material-UI components for consistent UI/UX
+ *
+ * - Comment created by Claude (Anthropic), edited by the author
+ */
+
 const API_URL = 'http://localhost:8080';
 
 const App = () => {

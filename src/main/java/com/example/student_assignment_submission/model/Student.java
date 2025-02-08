@@ -2,6 +2,11 @@ package com.example.student_assignment_submission.model;
 
 import jakarta.persistence.*;
 
+/**
+ * Represents a student entity in the assignment submission system.
+ * Students can submit multiple assignments and are uniquely identified by their email.
+ * - Comment created by Claude (Anthropic), edited by the author
+ */
 @Entity
 @Table(name = "students")
 public class Student {

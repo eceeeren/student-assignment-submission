@@ -1,5 +1,11 @@
 package com.example.student_assignment_submission.dto;
 
+/**
+ * Data Transfer Object (DTO) for assignment submission requests,
+ * created in order to process Submission creation request correctly.
+ *
+ * - Comment created by Claude (Anthropic), edited by the author
+ */
 public class AssignmentSubmissionRequest {
     private String title;
     private String description;

@@ -3,6 +3,11 @@ package com.example.student_assignment_submission.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Represents an assignment submission in the system.
+ * Each assignment is associated with a student and includes submission timestamp.
+ * - Comment created by Claude (Anthropic), edited by the author
+ */
 @Entity
 @Table(name = "assignments")
 public class Assignment {
@@ -17,6 +22,7 @@ public class Assignment {
     @Column(name = "description", length = 1000)
     private String description;
 
+    /** Reference to the student who submitted this assignment */
     @ManyToOne()
     @JoinColumn(name = "student_id", nullable = false)
     private Student submittedBy;
@@ -24,6 +30,9 @@ public class Assignment {
     @Column(name = "submitted_at", nullable = false)
     private LocalDateTime submittedAt;
 
+    /**
+     * Default constructor that initializes submission timestamp to current time.
+     */
     public Assignment() {
         this.submittedAt = LocalDateTime.now();
     }
