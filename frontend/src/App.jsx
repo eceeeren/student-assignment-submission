@@ -105,7 +105,7 @@ const App = () => {
 
             <Container maxWidth={false} sx={layoutStyles.mainContainer}>
                 <Paper sx={{ width: '100%', mb: 2 }}>
-                    <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)} centered>
+                    <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)} centered>
                         <Tab label="Students" />
                         <Tab label="Assignments" />
                     </Tabs>
@@ -192,51 +192,56 @@ const App = () => {
                                         <Typography variant="h6" gutterBottom>
                                             Submit New Assignment
                                         </Typography>
-                                        <form onSubmit={handleAssignmentSubmit} style={formStyles.form}>
-                                            <TextField
-                                                fullWidth
-                                                label="Assignment Title"
-                                                margin="normal"
-                                                value={newAssignment.title}
-                                                onChange={(e) => setNewAssignment({ ...newAssignment, title: e.target.value })}
-                                            />
-                                            <TextField
-                                                fullWidth
-                                                label="Assignment Description"
-                                                margin="normal"
-                                                multiline
-                                                rows={4}
-                                                value={newAssignment.description}
-                                                onChange={(e) => setNewAssignment({ ...newAssignment, description: e.target.value })}
-                                            />
-                                            <FormControl fullWidth margin="normal">
-                                                <InputLabel>Select Student</InputLabel>
-                                                <Select
-                                                    value={newAssignment.studentId}
-                                                    label="Select Student"
-                                                    onChange={(e) => setNewAssignment({ ...newAssignment, studentId: e.target.value })}
-                                                    variant="outlined"
+                                        {students.length === 0 ? (
+                                            <Typography color="error" sx={{ mt: 2 }}>
+                                                No students available. Please add students before creating assignments.
+                                            </Typography>
+                                        ) : (
+                                            <form onSubmit={handleAssignmentSubmit} style={formStyles.form}>
+                                                <TextField
+                                                    fullWidth
+                                                    label="Assignment Title"
+                                                    margin="normal"
+                                                    value={newAssignment.title}
+                                                    onChange={(e) => setNewAssignment({ ...newAssignment, title: e.target.value })}
+                                                />
+                                                <TextField
+                                                    fullWidth
+                                                    label="Assignment Description"
+                                                    margin="normal"
+                                                    multiline
+                                                    rows={4}
+                                                    value={newAssignment.description}
+                                                    onChange={(e) => setNewAssignment({ ...newAssignment, description: e.target.value })}
+                                                />
+                                                <FormControl fullWidth margin="normal">
+                                                    <InputLabel>Select Student</InputLabel>
+                                                    <Select
+                                                        variant="outlined"
+                                                        value={newAssignment.studentId}
+                                                        label="Select Student"
+                                                        onChange={(e) => setNewAssignment({ ...newAssignment, studentId: e.target.value })}
+                                                    >
+                                                        {students.map((student) => (
+                                                            <MenuItem key={student.id} value={student.id}>
+                                                                {student.name}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </Select>
+                                                </FormControl>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    type="submit"
+                                                    sx={formStyles.submitButton}
+                                                    fullWidth
                                                 >
-                                                    {students.map((student) => (
-                                                        <MenuItem key={student.id} value={student.id}>
-                                                            {student.name}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </FormControl>
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                type="submit"
-                                                sx={formStyles.submitButton}
-                                                fullWidth
-                                            >
-                                                Submit Assignment
-                                            </Button>
-                                        </form>
-                                    </CardContent>
-                                </Card>
-                            </Box>
+                                                    Submit Assignment
+                                                </Button>
+                                            </form>)}
+                                            </CardContent>
+                                            </Card>
+                                            </Box>
 
                             {/* Assignment List */}
                             <Box flex={1}>
