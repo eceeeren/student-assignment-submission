@@ -27,7 +27,10 @@ const App = () => {
     const [tabValue, setTabValue] = useState(0);
     const [students, setStudents] = useState([]);
     const [assignments, setAssignments] = useState([]);
-    const [newStudent, setNewStudent] = useState({ name: '', email: '' });
+    const [newStudent, setNewStudent] = useState({
+        name: '',
+        email: ''
+    });
     const [newAssignment, setNewAssignment] = useState({
         title: '',
         description: '',
@@ -61,6 +64,11 @@ const App = () => {
 
     const handleStudentSubmit = async (e) => {
         e.preventDefault();
+
+        if (!newStudent.name.trim() || !newStudent.email.trim()) {
+            return;
+        }
+
         try {
             const response = await fetch(`${API_URL}/students`, {
                 method: 'POST',
@@ -78,6 +86,11 @@ const App = () => {
 
     const handleAssignmentSubmit = async (e) => {
         e.preventDefault();
+
+        if (!newAssignment.title.trim() || !newAssignment.studentId) {
+            return;
+        }
+
         try {
             const response = await fetch(`${API_URL}/assignments`, {
                 method: 'POST',
@@ -122,19 +135,25 @@ const App = () => {
                                         </Typography>
                                         <form onSubmit={handleStudentSubmit} style={formStyles.form}>
                                             <TextField
+                                                required
                                                 fullWidth
                                                 label="Student Name"
                                                 margin="normal"
                                                 value={newStudent.name}
                                                 onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
+                                                error={!newStudent.name.trim()}
+                                                helperText={!newStudent.name.trim() ? "Name is required" : ""}
                                             />
                                             <TextField
+                                                required
                                                 fullWidth
                                                 label="Email"
                                                 margin="normal"
                                                 type="email"
                                                 value={newStudent.email}
                                                 onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })}
+                                                error={!newStudent.email.trim()}
+                                                helperText={!newStudent.email.trim() ? "Email is required" : ""}
                                             />
                                             <Button
                                                 variant="contained"
@@ -149,6 +168,8 @@ const App = () => {
                                     </CardContent>
                                 </Card>
                             </Box>
+
+                            {/* Assignment List */}
 
                             {/* Student List */}
                             <Box flex={1}>
@@ -199,11 +220,14 @@ const App = () => {
                                         ) : (
                                             <form onSubmit={handleAssignmentSubmit} style={formStyles.form}>
                                                 <TextField
+                                                    required
                                                     fullWidth
                                                     label="Assignment Title"
                                                     margin="normal"
                                                     value={newAssignment.title}
                                                     onChange={(e) => setNewAssignment({ ...newAssignment, title: e.target.value })}
+                                                    error={!newAssignment.title.trim()}
+                                                    helperText={!newAssignment.title.trim() ? "Title is required" : ""}
                                                 />
                                                 <TextField
                                                     fullWidth
@@ -214,7 +238,7 @@ const App = () => {
                                                     value={newAssignment.description}
                                                     onChange={(e) => setNewAssignment({ ...newAssignment, description: e.target.value })}
                                                 />
-                                                <FormControl fullWidth margin="normal">
+                                                <FormControl fullWidth margin="normal" required error={!newAssignment.studentId}>
                                                     <InputLabel>Select Student</InputLabel>
                                                     <Select
                                                         variant="outlined"
@@ -243,38 +267,38 @@ const App = () => {
                                             </Card>
                                             </Box>
 
-                            {/* Assignment List */}
-                            <Box flex={1}>
-                                <Card sx={cardStyles.card}>
-                                    <CardContent>
-                                        <Typography variant="h6" gutterBottom>
-                                            Assignment List
-                                        </Typography>
-                                        <List>
-                                            {assignments.map((assignment, index) => (
-                                                <ListItem key={assignment.id} divider>
-                                                    <Box sx={listStyles.listContent}>
-                                                        <Box sx={listStyles.numberBadge}>
-                                                            {index + 1}
-                                                        </Box>
-                                                        <Box sx={listStyles.listText}>
-                                                            <Typography variant="body1" sx={listStyles.listItemTitle}>
-                                                                <strong>Title:</strong> {assignment.title}
-                                                            </Typography>
-                                                            <Typography variant="body2" sx={listStyles.listItemSecondary}>
-                                                                <strong>Description:</strong> {assignment.description}
-                                                            </Typography>
-                                                            <Typography variant="body2" sx={listStyles.listItemSecondary}>
-                                                                <strong>Submitted By:</strong> {assignment.submittedBy?.name || 'Unknown'}
-                                                            </Typography>
-                                                        </Box>
-                                                    </Box>
-                                                </ListItem>
-                                            ))}
-                                        </List>
-                                    </CardContent>
-                                </Card>
-                            </Box>
+                                        {/* Assignment List */}
+                                        <Box flex={1}>
+                                            <Card sx={cardStyles.card}>
+                                                <CardContent>
+                                                    <Typography variant="h6" gutterBottom>
+                                                        Assignment List
+                                                    </Typography>
+                                                    <List>
+                                                        {assignments.map((assignment, index) => (
+                                                            <ListItem key={assignment.id} divider>
+                                                                <Box sx={listStyles.listContent}>
+                                                                    <Box sx={listStyles.numberBadge}>
+                                                                        {index + 1}
+                                                                    </Box>
+                                                                    <Box sx={listStyles.listText}>
+                                                                        <Typography variant="body1" sx={listStyles.listItemTitle}>
+                                                                            <strong>Title:</strong> {assignment.title}
+                                                                        </Typography>
+                                                                        <Typography variant="body2" sx={listStyles.listItemSecondary}>
+                                                                            <strong>Description:</strong> {assignment.description}
+                                                                        </Typography>
+                                                                        <Typography variant="body2" sx={listStyles.listItemSecondary}>
+                                                                            <strong>Submitted By:</strong> {assignment.submittedBy?.name || 'Unknown'}
+                                                                        </Typography>
+                                                                    </Box>
+                                                                </Box>
+                                                            </ListItem>
+                                                        ))}
+                                                    </List>
+                                                </CardContent>
+                                            </Card>
+                                        </Box>
                         </Stack>
                     </Box>
                 </Paper>
