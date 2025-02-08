@@ -10,15 +10,16 @@ import {
     Button,
     List,
     ListItem,
-    ListItemText,
     MenuItem,
     FormControl,
     InputLabel,
     Select,
     Card,
     CardContent,
-    Grid, Box
+    Stack,
+    Box
 } from '@mui/material';
+import { layoutStyles, listStyles, formStyles, cardStyles } from './styles';
 
 const API_URL = 'http://localhost:8080';
 
@@ -63,9 +64,7 @@ const App = () => {
         try {
             const response = await fetch(`${API_URL}/students`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newStudent),
             });
             if (response.ok) {
@@ -82,9 +81,7 @@ const App = () => {
         try {
             const response = await fetch(`${API_URL}/assignments`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newAssignment),
             });
             if (response.ok) {
@@ -97,62 +94,33 @@ const App = () => {
     };
 
     return (
-        <Box sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100vh',
-            width: '100%',
-        }}>
+        <Box sx={layoutStyles.container}>
             <AppBar position="static">
-                <Box sx={{
-                    width: '100%',
-                    position: 'relative',
-                    height: '100px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}>
-                    <Typography
-                        variant="h3"
-                        sx={{
-                            position: 'absolute',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            width: 'auto'
-                        }}
-                    >
+                <Box sx={layoutStyles.header}>
+                    <Typography variant="h3" sx={layoutStyles.headerTitle}>
                         Student Assignment System
                     </Typography>
                 </Box>
             </AppBar>
 
-            <Container maxWidth={false} sx={{
-                p: 3,
-                flexGrow: 1,
-                width: '100%'
-            }}>
+            <Container maxWidth={false} sx={layoutStyles.mainContainer}>
                 <Paper sx={{ width: '100%', mb: 2 }}>
-                    <Tabs
-                        value={tabValue}
-                        onChange={(event, newValue) => setTabValue(newValue)}
-                        aria-label="basic tabs example"
-                        centered
-                    >
+                    <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)} centered>
                         <Tab label="Students" />
                         <Tab label="Assignments" />
                     </Tabs>
 
                     {/* Students Tab Content */}
-                    <div hidden={tabValue !== 0}>
-                        <Grid container spacing={3} sx={{ p: 3 }}>
+                    <Box role="tabpanel" hidden={tabValue !== 0} sx={{ p: 3 }}>
+                        <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
                             {/* Student Registration Form */}
-                            <Grid item xs={12} md={6}>
-                                <Card>
-                                    <CardContent>
+                            <Box flex={1}>
+                                <Card sx={cardStyles.card}>
+                                    <CardContent sx={cardStyles.cardContent}>
                                         <Typography variant="h6" gutterBottom>
                                             Register New Student
                                         </Typography>
-                                        <form onSubmit={handleStudentSubmit}>
+                                        <form onSubmit={handleStudentSubmit} style={formStyles.form}>
                                             <TextField
                                                 fullWidth
                                                 label="Student Name"
@@ -172,49 +140,59 @@ const App = () => {
                                                 variant="contained"
                                                 color="primary"
                                                 type="submit"
-                                                sx={{ mt: 2 }}
+                                                sx={formStyles.submitButton}
+                                                fullWidth
                                             >
                                                 Register Student
                                             </Button>
                                         </form>
                                     </CardContent>
                                 </Card>
-                            </Grid>
+                            </Box>
 
                             {/* Student List */}
-                            <Grid item xs={12} md={6}>
-                                <Card>
+                            <Box flex={1}>
+                                <Card sx={cardStyles.card}>
                                     <CardContent>
                                         <Typography variant="h6" gutterBottom>
                                             Student List
                                         </Typography>
                                         <List>
-                                            {students.map((student) => (
+                                            {students.map((student, index) => (
                                                 <ListItem key={student.id} divider>
-                                                    <ListItemText
-                                                        primary={student.name}
-                                                        secondary={student.email}
-                                                    />
+                                                    <Box sx={listStyles.listContent}>
+                                                        <Box sx={listStyles.numberBadge}>
+                                                            {index + 1}
+                                                        </Box>
+                                                        <Box sx={listStyles.listText}>
+                                                            <Typography variant="body1" sx={listStyles.listItemTitle}>
+                                                                <strong>Name:</strong> {student.name}
+                                                            </Typography>
+                                                            <Typography variant="body2" sx={listStyles.listItemSecondary}>
+                                                                <strong>Email:</strong> {student.email}
+                                                            </Typography>
+                                                        </Box>
+                                                    </Box>
                                                 </ListItem>
                                             ))}
                                         </List>
                                     </CardContent>
                                 </Card>
-                            </Grid>
-                        </Grid>
-                    </div>
+                            </Box>
+                        </Stack>
+                    </Box>
 
                     {/* Assignments Tab Content */}
-                    <div hidden={tabValue !== 1}>
-                        <Grid container spacing={3} sx={{ p: 3 }}>
+                    <Box role="tabpanel" hidden={tabValue !== 1} sx={{ p: 3 }}>
+                        <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
                             {/* Assignment Form */}
-                            <Grid item xs={12} md={6}>
-                                <Card>
-                                    <CardContent>
+                            <Box flex={1}>
+                                <Card sx={cardStyles.card}>
+                                    <CardContent sx={cardStyles.cardContent}>
                                         <Typography variant="h6" gutterBottom>
                                             Submit New Assignment
                                         </Typography>
-                                        <form onSubmit={handleAssignmentSubmit}>
+                                        <form onSubmit={handleAssignmentSubmit} style={formStyles.form}>
                                             <TextField
                                                 fullWidth
                                                 label="Assignment Title"
@@ -237,6 +215,7 @@ const App = () => {
                                                     value={newAssignment.studentId}
                                                     label="Select Student"
                                                     onChange={(e) => setNewAssignment({ ...newAssignment, studentId: e.target.value })}
+                                                    variant="outlined"
                                                 >
                                                     {students.map((student) => (
                                                         <MenuItem key={student.id} value={student.id}>
@@ -249,37 +228,50 @@ const App = () => {
                                                 variant="contained"
                                                 color="primary"
                                                 type="submit"
-                                                sx={{ mt: 2 }}
+                                                sx={formStyles.submitButton}
+                                                fullWidth
                                             >
                                                 Submit Assignment
                                             </Button>
                                         </form>
                                     </CardContent>
                                 </Card>
-                            </Grid>
+                            </Box>
 
                             {/* Assignment List */}
-                            <Grid item xs={12} md={6}>
-                                <Card>
+                            <Box flex={1}>
+                                <Card sx={cardStyles.card}>
                                     <CardContent>
                                         <Typography variant="h6" gutterBottom>
                                             Assignment List
                                         </Typography>
                                         <List>
-                                            {assignments.map((assignment) => (
+                                            {assignments.map((assignment, index) => (
                                                 <ListItem key={assignment.id} divider>
-                                                    <ListItemText
-                                                        primary={assignment.title}
-                                                        secondary={assignment.description}
-                                                    />
+                                                    <Box sx={listStyles.listContent}>
+                                                        <Box sx={listStyles.numberBadge}>
+                                                            {index + 1}
+                                                        </Box>
+                                                        <Box sx={listStyles.listText}>
+                                                            <Typography variant="body1" sx={listStyles.listItemTitle}>
+                                                                <strong>Title:</strong> {assignment.title}
+                                                            </Typography>
+                                                            <Typography variant="body2" sx={listStyles.listItemSecondary}>
+                                                                <strong>Description:</strong> {assignment.description}
+                                                            </Typography>
+                                                            <Typography variant="body2" sx={listStyles.listItemSecondary}>
+                                                                <strong>Submitted By:</strong> {assignment.submittedBy?.name || 'Unknown'}
+                                                            </Typography>
+                                                        </Box>
+                                                    </Box>
                                                 </ListItem>
                                             ))}
                                         </List>
                                     </CardContent>
                                 </Card>
-                            </Grid>
-                        </Grid>
-                    </div>
+                            </Box>
+                        </Stack>
+                    </Box>
                 </Paper>
             </Container>
         </Box>
